@@ -1,22 +1,24 @@
 import React from 'react'
-import { Animated, Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 
 
 
-function SongCard() {
+function SongCard({ title, artist, image, album }) {
+    console.log(title);
     return (
         <>
             <View >
                 <Image
                     style={styles.mainCard}
                     resizeMode='cover'
-                    source={require("../assets/test-cards/1.jpg")} />
+                    source={{ uri: image }}
+                />
 
                 <View style={styles.dataHeader}>
-                    <Animated.Text numberOfLines={1} style={styles.title}>
-                        Don't Forget where You Belong hhhhhh hhhhhhhhh
-                    </Animated.Text>
-                    <Text style={styles.author}>One Direction</Text>
+                    <Text numberOfLines={1} style={styles.name}>
+                        {title}
+                    </Text>
+                    <Text style={styles.author}>{artist || album}</Text>
                 </View>
             </View>
         </>
@@ -41,7 +43,8 @@ const styles = StyleSheet.create({
         width: 300,
         flexDirection: 'column',
         padding: 10,
-        overflow: "hidden"
+        overflow: "hidden",
+        marginTop: 40
     },
 
     title: {
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 20,
-        width: "auto",
+        // width: "auto",
     },
 
     author: {

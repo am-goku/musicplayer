@@ -6,44 +6,47 @@ import { Audio } from 'expo-av';
 import Entypo from 'react-native-vector-icons/Entypo'
 import SongCard from '../components/SongCard';
 import { tracks } from '../services/musicService';
+import { fetchByAlbum } from '../services/api/songService';
 
 
 function PlayerScreen() {
-
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1.0);
 
     const [sound, setSound] = useState();
 
-    const [song, setSong] = useState(tracks[2]);
+    const [song, setSong] = useState(0);
+
 
     useEffect(() => {
         async function playSound() {
             try {
-              // Load the audio from the URL
-              const { sound } = await Audio.Sound.createAsync(
-                { uri: song.url }
-              );
+                const { sound } = await Audio.Sound.createAsync(
+                    { uri: tracks[song].url }
+                    // {uri: "file:///storage/emulated/0/Download/One Direction - They Don't Know About Us Instrumental (mp3cut.net).mp3"}
+                );
 
-        
-              // Set the sound object to the state
-              setSound(sound);
-        
-              // Play the loaded audio
-              await sound.playAsync();
-              setIsPlaying(true);
+                setSound(sound);
+
+                await sound.playAsync();
+                setIsPlaying(true);
             } catch (error) {
-              console.error('Error loading audio:', error);
+                console.error('Error loading audio:', error);
             }
         };
 
         playSound();
-    }, [song])
+    }, [song, tracks])
 
 
     useEffect(() => {
-        
-    })
+        sound?.setOnPlaybackStatusUpdate(status => {
+            if (status.didJustFinish) {
+                console.log('The song has reached its end.');
+                setSong(song + 1);
+            }
+        });
+    }, [sound])
 
 
     const togglePlayback = async () => {
@@ -59,36 +62,41 @@ function PlayerScreen() {
         setIsPlaying(!isPlaying);
     };
 
-    const handleVolumeChange = (value) => {
-        setVolume(value);
-        soundObject.setVolumeAsync(value).catch((err) => {
-            console.log(err);
-        });
+
+    const nextSong = async () => {
+        await sound.stopAsync()
+        if (song === tracks.length - 1) return setSong(0)
+        setSong(song + 1);
     };
+
+    const prevSong = async () => {
+        await sound.stopAsync()
+        if (song === 0) return setSong(song);
+        setSong(song - 1);
+    }
 
 
     return (
         <>
-
-            {/* <Stack.Screen name='play' options={{title:'overview'}}  /> */}
-
             <ImageBackground resizeMode='cover' style={styles.background} source={require('../assets/background.jpg')}>
-
-                <SongCard />
+{/* 
+                <SongCard
+                    title={tracks[song].name}
+                    album={artist.name}
+                    image={artist.image}
+                    artist={artist.artist_name} /> */}
 
 
                 <View style={styles.controller}>
                     <Slider style={{ width: 300, height: 50 }}
                         minimumValue={0}
                         maximumValue={1}
-                        value={volume}
-                        onValueChange={handleVolumeChange}
                         minimumTrackTintColor="#ffffff"
                         maximumTrackTintColor="#ffffff" />
 
                     <View style={styles.controllBtns}>
 
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={prevSong}>
                             <Entypo name='controller-jump-to-start' color={'#fff'} size={40} />
                         </TouchableWithoutFeedback>
 
@@ -98,7 +106,7 @@ function PlayerScreen() {
                             </View>
                         </TouchableWithoutFeedback>
 
-                        <TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={nextSong}>
                             <Entypo name='controller-next' color={'#fff'} size={40} />
                         </TouchableWithoutFeedback>
 

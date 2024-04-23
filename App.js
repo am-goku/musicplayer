@@ -6,13 +6,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Ionicons } from '@expo/vector-icons'; // or any other icon library you prefer
+import Permissions from './app/components/middleware/Permissions';
 
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+      <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           activeTintColor: 'blue',
@@ -39,7 +40,7 @@ export default function App() {
       >
         <Tab.Screen  name="Home" component={HomeScreen} />
         <Tab.Screen name="Music" component={PlayerScreen} />
-        <Tab.Screen name="Profile" component={PlayerScreen} />
+        {/* <Tab.Screen name="Profile" component={PlayerScreen} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );
