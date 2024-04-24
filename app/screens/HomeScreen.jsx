@@ -60,7 +60,7 @@ export default HomeScreen
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     ScrollView: {
@@ -70,10 +70,12 @@ const styles = StyleSheet.create({
         // position: "absolute",
         top: StatusBar.currentHeight + 50,
         padding: 20,
-        marginBottom: 40
+        marginBottom: 40,
     },
 
-    CardContainer: { display: "flex", flexDirection: "column", gap: 20, paddingEnd: 25, width: "100%", },
+    CardContainer: { display: "flex", flexDirection: "column", gap: 20, width: "100%",
+        justifyContent: 'center', alignItems: 'center',
+    },
 
 
 })

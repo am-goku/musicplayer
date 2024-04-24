@@ -1,21 +1,21 @@
-import { Animated, Button, Image, ImageBackground, StatusBar, StyleSheet, Text, TouchableHighlight, TouchableWithoutFeedback, View } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
-import { Audio } from 'expo-av';
-
+import { ImageBackground, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import Slider from '@react-native-community/slider';
 import Entypo from 'react-native-vector-icons/Entypo'
-import SongCard from '../components/SongCard';
+import { Audio } from 'expo-av';
 import { tracks } from '../services/musicService';
-import { fetchByAlbum } from '../services/api/songService';
+import { useAudio } from '../context/AudioContext';
 
 
 function PlayerScreen() {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [volume, setVolume] = useState(1.0);
-
+    // const [isPlaying, setIsPlaying] = useState(false);
     const [sound, setSound] = useState();
-
     const [song, setSong] = useState(0);
+
+    const {soundObject, setSoundObject, setIsPlaying} = useAudio()
+
+
+    const togglePlayback = () => {setIsPlaying(false)}
 
 
     useEffect(() => {
@@ -23,12 +23,8 @@ function PlayerScreen() {
             try {
                 const { sound } = await Audio.Sound.createAsync(
                     { uri: tracks[song].url }
-                    // {uri: "file:///storage/emulated/0/Download/One Direction - They Don't Know About Us Instrumental (mp3cut.net).mp3"}
                 );
-
-                setSound(sound);
-
-                await sound.playAsync();
+                setSoundObject(sound);
                 setIsPlaying(true);
             } catch (error) {
                 console.error('Error loading audio:', error);
@@ -49,28 +45,15 @@ function PlayerScreen() {
     }, [sound])
 
 
-    const togglePlayback = async () => {
-        try {
-            if (isPlaying) {
-                await sound.pauseAsync();
-            } else {
-                await sound.playAsync();
-            }
-        } catch (error) {
-            console.log(error, isPlaying);
-        }
-        setIsPlaying(!isPlaying);
-    };
-
 
     const nextSong = async () => {
-        await sound.stopAsync()
+        await soundObject.stopAsync()
         if (song === tracks.length - 1) return setSong(0)
         setSong(song + 1);
     };
 
     const prevSong = async () => {
-        await sound.stopAsync()
+        await soundObject.stopAsync()
         if (song === 0) return setSong(song);
         setSong(song - 1);
     }
