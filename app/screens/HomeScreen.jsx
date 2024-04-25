@@ -1,4 +1,4 @@
-import { ImageBackground, StatusBar, StyleSheet, View, ScrollView, Text, TouchableHighlight } from 'react-native'
+import { ImageBackground, StatusBar, StyleSheet, View, ScrollView, Text, TouchableHighlight, Button, Modal } from 'react-native'
 import CommonCard from '../components/CommonCard'
 
 import { usePermissions } from 'expo-permissions'
@@ -9,6 +9,7 @@ import * as MediaLibrary from "expo-media-library"
 function HomeScreen() {
 
     const [tracks, setTracks] = useState([])
+    const [modal, setModal] = useState(false)
 
     const getMedia = async () => {
         const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -38,9 +39,9 @@ function HomeScreen() {
                                 return <CommonCard name={track.filename} uri={track.uri} key={index} />
                             })
                         }
-                        <CommonCard />
-                        <CommonCard />
-                        <CommonCard />
+
+                        <Button title='open' onPress={() => setModal(true)}></Button>
+
 
                     </View>
 

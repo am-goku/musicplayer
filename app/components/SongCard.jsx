@@ -1,21 +1,23 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 
 
 
 function SongCard({ title, artist, image, album }) {
-    console.log(title);
+    
+    const {height, width} = useWindowDimensions();
+
     return (
         <>
             <View >
                 <Image
-                    style={styles.mainCard}
+                    style={styles.mainCard(height)}
                     resizeMode='cover'
                     source={{ uri: image }}
                 />
 
                 <View style={styles.dataHeader}>
-                    <Text numberOfLines={1} style={styles.name}>
+                    <Text numberOfLines={1} style={styles.title}>
                         {title}
                     </Text>
                     <Text style={styles.author}>{artist || album}</Text>
@@ -32,27 +34,26 @@ const styles = StyleSheet.create({
 
 
 
-    mainCard: {
+    mainCard: (height) => {return {
         width: 300,
-        height: 500,
+        height: height/2,
         borderRadius: 20,
-        borderWidth: 20
-    },
+        borderWidth: 20,
+        marginTop: 30,
+    }},
 
     dataHeader: {
         width: 300,
         flexDirection: 'column',
         padding: 10,
         overflow: "hidden",
-        marginTop: 40
+        // marginTop: 40
     },
 
     title: {
         color: "#fff",
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 20,
-        // width: "auto",
     },
 
     author: {
@@ -61,12 +62,3 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
 });
-
-const slideIn = {
-    from: {
-        transform: 'translateX(-100%)',
-    },
-    to: {
-        transform: 'translateX(0%)',
-    }
-}

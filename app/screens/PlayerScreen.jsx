@@ -6,16 +6,16 @@ import { Audio } from 'expo-av';
 import { tracks } from '../services/musicService';
 import { useAudio } from '../context/AudioContext';
 
+import SongCard from '../components/SongCard';
+
 
 function PlayerScreen() {
-    // const [isPlaying, setIsPlaying] = useState(false);
-    const [sound, setSound] = useState();
     const [song, setSong] = useState(0);
 
-    const {soundObject, setSoundObject, setIsPlaying} = useAudio()
+    const {soundObject, setSoundObject, isPlaying, setIsPlaying} = useAudio()
 
 
-    const togglePlayback = () => {setIsPlaying(false)}
+    const togglePlayback = () => setIsPlaying(!isPlaying)
 
 
     useEffect(() => {
@@ -36,13 +36,13 @@ function PlayerScreen() {
 
 
     useEffect(() => {
-        sound?.setOnPlaybackStatusUpdate(status => {
+        soundObject?.setOnPlaybackStatusUpdate(status => {
             if (status.didJustFinish) {
                 console.log('The song has reached its end.');
                 setSong(song + 1);
             }
         });
-    }, [sound])
+    }, [soundObject])
 
 
 
@@ -62,12 +62,12 @@ function PlayerScreen() {
     return (
         <>
             <ImageBackground resizeMode='cover' style={styles.background} source={require('../assets/background.jpg')}>
-{/* 
+
                 <SongCard
-                    title={tracks[song].name}
-                    album={artist.name}
-                    image={artist.image}
-                    artist={artist.artist_name} /> */}
+                    title={tracks[song].title}
+                    album={tracks[song].album}
+                    image={tracks[song].artwork}
+                    artist={tracks[song].artist} />
 
 
                 <View style={styles.controller}>
